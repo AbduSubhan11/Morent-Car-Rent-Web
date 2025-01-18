@@ -1,27 +1,63 @@
 import Image from "next/image";
 import React from "react";
+import { Button } from "./ui/button";
 
 function HeroSection() {
   return (
     <section className="px-4 sm:px-6 lg:px-10 py-10 bg-[#F6F7F9] space-y-10">
       {/* Images Section */}
       <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-        {/* Image 1 */}
-        <Image
-          src={"/images/Ads 1.png"}
-          alt="Advertisement 1"
-          width={640}
-          height={100}
-          className="rounded-lg w-full max-w-md lg:max-w-none h-auto"
-        />
-        {/* Image 2 */}
-        <Image
-          src={"/images/Ads 2.png"}
-          alt="Advertisement 2"
-          width={640}
-          height={100}
-          className="rounded-lg hidden sm:block w-full max-w-md lg:max-w-none h-auto"
-        />
+        {/* CARD 1 */}
+        <div className="bg-[#3563E9] h-[300px] sm:h-[340px] w-full lg:w-[50%] relative flex flex-col items-center justify-end py-10 rounded-xl ">
+          <Image
+            src={"/images/Koenigsegg.png"}
+            alt="Image"
+            width={300}
+            height={150}
+            className="sm:w-[300px] w-[190px] "
+          />
+          <div className="text-white flex flex-col w-[70%] sm:w-[50%] gap-4 p-5 absolute top-0 left-0">
+            <h1 className="font-semibold text-lg sm:text-[32px] leading-6 sm:leading-8">
+              The Best Platform for Car Rental
+            </h1>
+            <p className="font-medium text-xs sm:text-base leading-[15px] sm:leading-6 ">
+              Ease of doing a car rental safely and reliably. Of course at a low
+              price.
+            </p>
+            <Button
+              variant={"outline"}
+              className="bg-[#3b5dc4] px-2 sm:px-5 text-white w-fit"
+            >
+              Rental Car
+            </Button>
+          </div>
+        </div>
+
+        {/* CARD 2 */}
+        <div className="bg-[#3563E9] h-[340px] w-full lg:w-[50%] relative sm:flex flex-col items-center justify-end py-10 rounded-xl hidden">
+          <Image
+            src={"/images/Nissan GT - R.png"}
+            alt="Image"
+            width={300}
+            height={150}
+            className="sm:w-[300px] w-[190px] "
+          />
+          <div className="text-white flex flex-col sm:w-[50%] gap-4 p-5 absolute top-0 left-0">
+            <h1 className="font-semibold text-base sm:text-[32px] leading-6 sm:leading-8">
+              Easy way to rent a car at a low price
+            </h1>
+            <p className="font-medium text-xs sm:text-base leading-[15px] sm:leading-6 ">
+              Providing cheap car rental services and safe and comfortable
+              facilities.
+            </p>
+            <Button
+              variant={"outline"}
+              className="bg-[#3b5dc4] px-5 text-white w-fit"
+            >
+              Rental Car
+            </Button>
+          </div>
+        </div>
       </div>
 
       {/* Pick-Up and Drop-Off Section */}

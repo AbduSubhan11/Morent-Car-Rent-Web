@@ -1,8 +1,69 @@
+"use client"
 import DashboardAsideBar from "@/components/Dashboard AsideBar";
+import { client } from "@/sanity/lib/client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-function page() {
+type AllCar = {
+  id: number;
+  name: string;
+  category: string;
+  image: string;
+  petrol: number;
+  people: number;
+  price: number;
+  type?: string;
+  transmission?: string;
+  originalPrice?: number;
+};
+
+async function fetchAllCars() {
+  const query = `*[_type == "car" ]{
+    id,
+    name,
+    type,
+    category,
+    "image": image.asset->url,
+    fuelCapacity,
+    seatingCapacity,
+    pricePerDay,
+    originalPrice,
+    transmission
+  }`;
+
+  try {
+    const cars = await client.fetch(query);
+
+    return cars.map((car: any) => ({
+      id: car.id,
+      name: car.name,
+      type: car.type,
+      category: car.category,
+      image: car.image || "",
+      petrol: car.fuelCapacity || 0,
+      people: car.seatingCapacity || 0,
+      price: car.pricePerDay || 0,
+      transmission: car.transmission,
+      originalPrice: car.originalPrice || undefined,
+    }));
+  } catch (error) {
+    console.error("Error fetching data from Sanity:", error);
+    return [];
+  }
+}
+
+function Page() {
+  const [AllCarData, SetAllCarData] = useState<AllCar[]>([]);
+
+  useEffect(() => {
+    async function fetchDynamicData() {
+      const fetchedDynamicCars = await fetchAllCars();
+
+      SetAllCarData(fetchedDynamicCars.slice(0, 5));
+    }
+    fetchDynamicData();
+  }, []);
+
   return (
     <section className="bg-[#F6F7F9] flex">
       <DashboardAsideBar />
@@ -167,7 +228,9 @@ function page() {
           {/* TOTAL PRICE */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className=" text-sm sm:text-xl font-bold" >Total Rental Price</h1>
+              <h1 className=" text-sm sm:text-xl font-bold">
+                Total Rental Price
+              </h1>
               <h1>Overall price and includes rental discount</h1>
             </div>
             <div className=" text-base font-semibold sm:text-xl">$80.00</div>
@@ -175,9 +238,11 @@ function page() {
         </div>
 
         {/* RIGHT */}
-        <div className="bg-white p-6 flex flex-col rounded-md xl:w-[50%] space-y-5">
+        <div className="bg-white p-6 flex flex-col rounded-md xl:w-[50%] space-y-10">
           <div className="space-y-5">
-            <h1 className=" font-bold text-base sm:text-xl">Top 5 Car Rental</h1>
+            <h1 className=" font-bold text-base sm:text-xl">
+              Top 5 Car Rental
+            </h1>
             <div className="flex flex-col md:flex-row items-center gap-2">
               <div className="relative flex items-center justify-center">
                 <Image
@@ -272,55 +337,26 @@ function page() {
           </div>
           <div className="space-y-5">
             <div className="flex items-center justify-between">
-                <h1>Recent Transaction</h1>
-                <h1>View All</h1>
+              <h1>Recent Transaction</h1>
+              <h1>View All</h1>
             </div>
-            <div className="space-y-6">
+
+            {/* FEW CARS */}
+            {AllCarData.map((car, index) => (
+              <div key={index} className="space-y-6">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-                    <Image src="/images/Nissan GT - R.png" alt="" width={150} height={150}/>
-                    <div className="flex flex-col gap-2">
-                        <h1 className="">Nissan GT - R</h1>
-                        <p>Sport Car</p>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <h1 className="text-sm text-[#90A3BF]">20 July</h1>
-                        <p>$80.00</p>
-                    </div>
+                  <Image src={car.image} alt="" width={150} height={150} />
+                  <div className="flex flex-col items-center gap-2">
+                    <h1 className="font-semibold" >{car.name}</h1>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <h1 className="text-sm text-[#90A3BF]">20 July</h1>
+                    <p>{car.price}</p>
+                  </div>
                 </div>
-                <div className="flex  flex-col sm:flex-row items-center justify-between gap-2">
-                    <Image src="/images/Koenigsegg.png" alt="" width={150} height={150}/>
-                    <div className="flex flex-col gap-2">
-                        <h1>Koenigsegg</h1>
-                        <p>Sport Car</p>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <h1 className="text-sm text-[#90A3BF]">19 July</h1>
-                        <p>$99.00</p>
-                    </div>
-                </div>
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-                    <Image src="/images/Rolls - Royce.png" alt="" width={150} height={150}/>
-                    <div className="flex flex-col gap-2">
-                        <h1>ROlls Royce</h1>
-                        <p>Sport Car</p>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <h1 className="text-sm text-[#90A3BF]">18 July</h1>
-                        <p>$96.00</p>
-                    </div>
-                </div>
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-                    <Image src="/images/Car - v.png" alt="" width={150} height={150}/>
-                    <div className="flex flex-col gap-2">
-                        <h1>Cr-V</h1>
-                        <p>SUV</p>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <h1 className="text-sm text-[#90A3BF]">19 July</h1>
-                        <p>$80.00</p>
-                    </div>
-                </div>
-            </div>
+                
+              </div>
+            ))}
           </div>
         </div>
       </main>
@@ -328,4 +364,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

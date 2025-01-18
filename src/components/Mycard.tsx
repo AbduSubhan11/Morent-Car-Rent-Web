@@ -1,27 +1,28 @@
 import Image from "next/image";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type data = {
+  id:number;
   name: string;
   category: string;
   image: string;
   petrol: number;
   people: number;
   price: number;
-  favourite: boolean;
-  discount?: number;
+  originalPrice?: number;
 };
 
 function card({
+  id,
   name,
   category,
   image,
   petrol,
   people,
   price,
-  discount,
-  favourite,
+  originalPrice,
 }: data) {
   return (
     <div className="p-5 space-y-10 lg:w-fi bg-white rounded-md">
@@ -32,7 +33,7 @@ function card({
             width="24"
             height="24"
             viewBox="0 0 24 24"
-            fill={`${favourite ? "red" : "none"}`}
+            fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
@@ -64,7 +65,7 @@ function card({
               fill="#90A3BF"
             />
           </svg>
-          {petrol}L
+          {petrol}
         </div>
         <div className="flex items-center gap-[6px]">
           <svg
@@ -115,23 +116,26 @@ function card({
               fill="#90A3BF"
             />
           </svg>
-          {people}People
+          {people}
         </div>
       </div>
 
       <div className="flex justify-between items-center">
         <div className="flex flex-col">
           <h1 className="text-xl font-bold">
-            ${price}.00 /
-            <span className="text-[#90A3BF] font-bold text-sm ">day</span>{" "}
+            {price.toString().includes("/day") ? price : `${price}/day`}
           </h1>
-          <h1 className="text-[#90A3BF] font-bold text-sm ">
-            <s>{discount}</s>
-          </h1>
+          {originalPrice && (
+            <h1 className="text-[#90A3BF] font-bold text-sm">
+              <s>{originalPrice}</s>
+            </h1>
+          )}
         </div>
-        <Button variant={"outline"} className="bg-[#3563E9] px-5 text-white">
-          Rent Now
-        </Button>
+        <Link href={`/car/${id}`}>
+          <Button variant={"outline"} className="bg-[#3563E9] px-5 text-white">
+            Rent Now
+          </Button>
+        </Link>
       </div>
     </div>
   );

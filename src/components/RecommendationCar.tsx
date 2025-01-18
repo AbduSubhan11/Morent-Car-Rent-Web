@@ -1,94 +1,63 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Mycard from "./Mycard";
 import { Button } from "./ui/button";
+import { client } from "@/sanity/lib/client";
+import GridSkeleton from "./GridSkeletion";
 
 type recomendcardata = {
+  id: number;
   name: string;
   category: string;
   image: string;
   petrol: number;
   people: number;
   price: number;
-  favourite: boolean;
-  discount?: number;
+  originalPrice?: number;
 };
 
-const RecomendCarData: recomendcardata[] = [
-  {
-    name: "All New Rush",
-    category: "Suv",
-    image: "/images/All New Rush.png",
-    petrol: 70,
-    people: 6,
-    price: 72,
-    favourite: false,
-  },
-  {
-    name: "CR -V",
-    category: "SUV",
-    image: "/images/Car - v.png",
-    petrol: 80,
-    people: 6,
-    price: 80,
-    favourite: true,
-  },
-  {
-    name: "All New Terios",
-    category: "Suv",
-    image: "/images/All New Rush.png",
-    petrol: 90,
-    people: 6,
-    price: 74,
-    favourite: false,
-  },
-  {
-    name: "CR -V",
-    category: "SUV",
-    image: "/images/Car - v.png",
-    petrol: 80,
-    people: 6,
-    price: 80,
-    favourite: true,
-  },
-  {
-    name: "MG ZX Exclusice",
-    category: "Hatchback",
-    image: "/images/MG ZX Exclusic.png",
-    petrol: 70,
-    people: 4,
-    price: 76,
-    discount: 80,
-    favourite: true,
-  },
-  {
-    name: "New MG ZS",
-    category: "SUV",
-    image: "/images/New MG ZX.png",
-    petrol: 80,
-    people: 6,
-    price: 80,
-    favourite: false,
-  },
-  {
-    name: "MG ZX Excite ",
-    category: "Hatchback",
-    image: "/images/MG ZX Exclusic.png",
-    petrol: 90,
-    people: 4,
-    price: 74,
-    favourite: true,
-  },
-  {
-    name: "New MG ZS",
-    category: "SUV",
-    image: "/images/New MG ZX.png",
-    petrol: 80,
-    people: 6,
-    price: 80,
-    favourite: false,
-  },
-];
+async function fetchRecommendedCarsFromSanity() {
+  const query = `*[_type == "car" && "recommended" in tags]{
+    id,
+    name,
+    category,
+    "image": image.asset->url,
+    fuelCapacity,
+    seatingCapacity,
+    pricePerDay,
+    originalPrice
+  }`;
+
+  try {
+    const cars = await client.fetch(query);
+    
+    return cars.map((car: any) => ({
+      id:car.id,
+      name: car.name,
+      category: car.category,
+      image: car.image || "",
+      petrol: car.fuelCapacity || 0,
+      people: car.seatingCapacity || 0,
+      price: car.pricePerDay || 0,
+      originalPrice: car.originalPrice || undefined,
+    }));
+  } catch (error) {
+    console.error("Error fetching data from Sanity:", error);
+    return [];
+  }
+}
+
 function RecommendationCar() {
+  const [carData, setCarData] = useState<recomendcardata[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const fetchedCars = await fetchRecommendedCarsFromSanity();
+      setCarData(fetchedCars);
+    }
+    fetchData();
+  }, []);
+
   return (
     <section className="px-6 sm:px-10 bg-[#f6f7f9] py-8 space-y-8">
       <div className="space-y-8">
@@ -96,19 +65,23 @@ function RecommendationCar() {
           Recomendation Car
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {RecomendCarData.map((val: recomendcardata, index: number) => (
-            <Mycard
-              key={index}
-              name={val.name}
-              category={val.category}
-              image={val.image}
-              petrol={val.petrol}
-              people={val.people}
-              price={val.price}
-              discount={val.discount}
-              favourite={val.favourite}
-            />
-          ))}
+          {carData.length === 0 ? (
+            <GridSkeleton />
+          ) : (
+            carData.map((val: recomendcardata, index: number) => (
+              <Mycard
+                key={index}
+                id={val.id}
+                name={val.name}
+                category={val.category}
+                image={val.image}
+                petrol={val.petrol}
+                people={val.people}
+                price={val.price}
+                originalPrice={val.originalPrice}
+              />
+            ))
+          )}
         </div>
       </div>
       <div className="flex items-center">

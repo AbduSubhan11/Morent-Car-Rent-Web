@@ -92,7 +92,7 @@ function Header() {
             <input
               type="text"
               placeholder="Search something here"
-              className="w-full"
+              className="w-full outline-none"
             />
           </div>
           <svg
@@ -181,7 +181,7 @@ function Header() {
             <input
               type="text"
               placeholder="Search something here"
-              className="w-full"
+              className="w-full outline-none"
             />
           </div>
           <div className="flex items-center  rounded-md border px-4 h-[44px]">
@@ -278,15 +278,7 @@ function Header() {
           >
             Dashboard
           </Link>
-          <Link
-            href="/details"
-            onClick={toggleMenu}
-            className={`hover:text-black hover:underline underline-offset-4 ${
-              pathname === "/signup" ? "text-black underline" : " "
-            } ${isHamburger ? "border-b-2" : ""}`}
-          >
-            Details
-          </Link>
+          
           <Link
             href="/payment"
             onClick={toggleMenu}
