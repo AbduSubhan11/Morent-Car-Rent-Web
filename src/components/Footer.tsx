@@ -23,11 +23,11 @@ function Footer() {
               <Link href={""} className="text-[#838383] font-medium text-base">
                 How it works
               </Link>
-              <Link href={""} className="text-[#838383] font-medium text-base">
-                Featured
+              <Link href={"/faq"} className="text-[#838383] font-medium text-base">
+                FAQs
               </Link>
-              <Link href={""} className="text-[#838383] font-medium text-base">
-                Partnership
+              <Link href={"/faq"} className="text-[#838383] font-medium text-base">
+                Help & Center
               </Link>
               <Link href={""} className="text-[#838383] font-medium text-base">
                 Bussiness Relation

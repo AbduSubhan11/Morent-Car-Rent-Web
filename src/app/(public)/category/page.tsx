@@ -1,13 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Slider } from "@/components/ui/slider";
 import Mycard from "../../../components/Mycard";
 import { Button } from "@/components/ui/button";
 import { client } from "@/sanity/lib/client";
 import GridSkeleton from "@/components/GridSkeletion";
+import Link from "next/link";
+import CategoryAsideBar from "@/components/Category AsideBar";
+
 type categorycardata = {
-  id:number;
+  id: number;
   name: string;
   category: string;
   image: string;
@@ -32,7 +33,7 @@ async function fetchCarsFromSanity() {
   try {
     const cars = await client.fetch(query);
     return cars.map((car: any) => ({
-      id:car.id,
+      id: car.id,
       name: car.name,
       category: car.category,
       image: car.image || "",
@@ -49,6 +50,10 @@ async function fetchCarsFromSanity() {
 
 function Page() {
   const [carData, setCarData] = useState<categorycardata[]>([]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([90, 210]);
+  const handleSliderChange = (value: [number, number]) => {
+    setPriceRange(value);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -60,78 +65,10 @@ function Page() {
 
   return (
     <section className="bg-[#f6f7f9] flex ">
-      <aside className="lg:w-[20%] xl:w-[15%] hidden lg:block border-r px-5 py-6 bg-white space-y-10">
-        {/* TYPE */}
-        <div className="space-y-5">
-          <h1 className="text-[#90A3BF] font-semibold text-xs ">TYPE</h1>
-          <div className="flex flex-col gap-8">
-            <div className="flex items-center gap-2 text-[#596780] font-semibold text-1xl">
-              <Checkbox checked={true} />
-              Sport
-              <span className="text-[#90A3BF] font-semibold text-xl">(10)</span>
-            </div>
-            <div className="flex items-center gap-2 text-[#596780] font-semibold text-1xl">
-              <Checkbox checked={true} />
-              SUV
-              <span className="text-[#90A3BF] font-semibold text-xl">(12)</span>
-            </div>
-            <div className="flex items-center gap-2 text-[#596780] font-semibold text-1xl">
-              <Checkbox />
-              MPV
-              <span className="text-[#90A3BF] font-semibold text-xl">(16)</span>
-            </div>
-            <div className="flex items-center gap-2 text-[#596780] font-semibold text-1xl">
-              <Checkbox />
-              Sedan
-              <span className="text-[#90A3BF] font-semibold text-xl">(20)</span>
-            </div>
-            <div className="flex items-center gap-2 text-[#596780] font-semibold text-1xl">
-              <Checkbox />
-              Coupe
-              <span className="text-[#90A3BF] font-semibold text-xl">(14)</span>
-            </div>
-            <div className="flex items-center gap-2 text-[#596780] font-semibold text-1xl">
-              <Checkbox />
-              Hatchback
-              <span className="text-[#90A3BF] font-semibold text-xl">(14)</span>
-            </div>
-          </div>
-        </div>
-
-        {/* CATEGORY */}
-        <div className="space-y-5">
-          <h1 className="text-[#90A3BF] font-semibold text-xs ">Category</h1>
-          <div className="flex flex-col gap-8">
-            <div className="flex items-center gap-2 text-[#596780] font-semibold text-1xl">
-              <Checkbox />2 Person
-              <span className="text-[#90A3BF] font-semibold text-xl">(10)</span>
-            </div>
-            <div className="flex items-center gap-2 text-[#596780] font-semibold text-1xl">
-              <Checkbox />4 Person
-              <span className="text-[#90A3BF] font-semibold text-xl">(14)</span>
-            </div>
-            <div className="flex items-center gap-2 text-[#596780] font-semibold text-1xl">
-              <Checkbox />6 Person
-              <span className="text-[#90A3BF] font-semibold text-xl">(12)</span>
-            </div>
-            <div className="flex items-center gap-2 text-[#596780] font-semibold text-1xl">
-              <Checkbox checked={true} />8 or More
-              <span className="text-[#90A3BF] font-semibold text-xl">(16)</span>
-            </div>
-          </div>
-        </div>
-
-        {/* PRICE */}
-        <div className="flex flex-col gap-7 ">
-          <h1 className="text-[#90A3BF] font-semibold text-xs ">Price</h1>
-          <div className="flex flex-col gap-3">
-            <Slider defaultValue={[70]} max={100} step={1} />
-            <h1 className="flex items-center gap-2 text-[#596780] font-semibold text-1xl">
-              Max. $100.00
-            </h1>
-          </div>
-        </div>
-      </aside>
+      <CategoryAsideBar
+        maxPrice={priceRange}
+        handleSliderChange={handleSliderChange}
+      />
 
       {/* RIGHT SIDE */}
       <main className=" w-full lg:w-[90%] xl:w-[85%] px-6 py-7 space-y-7">
@@ -310,29 +247,50 @@ function Page() {
           {carData.length === 0 ? (
             <GridSkeleton />
           ) : (
-            carData.map((val: categorycardata, index: number) => (
-              <Mycard
-                key={index}
-                id={val.id}
-                name={val.name}
-                category={val.category}
-                image={val.image}
-                petrol={val.petrol}
-                people={val.people}
-                price={val.price}
-                originalPrice={val.originalPrice}
-              />
-            ))
+            (() => {
+              const filteredCars = carData.filter((car) => {
+                const cleanedPrice = car.price
+                  .toString()
+                  .replace(/[^\d.-]/g, "");
+                const price = Number(cleanedPrice);
+                return (
+                  price &&
+                  price >= Number(priceRange[0]) &&
+                  price <= Number(priceRange[1])
+                );
+              });
+
+              return filteredCars.length === 0 ? (
+                <p>No cars available in the selected price range.</p>
+              ) : (
+                filteredCars.map((val: categorycardata, index: number) => (
+                  <Mycard
+                    key={index}
+                    id={val.id}
+                    name={val.name}
+                    category={val.category}
+                    image={val.image}
+                    petrol={val.petrol}
+                    people={val.people}
+                    price={val.price}
+                    originalPrice={val.originalPrice}
+                  />
+                ))
+              );
+            })()
           )}
         </div>
+
         <div className="flex items-center">
           <div className="flex justify-end w-[73%] sm:w-[80%] md:w-[70%] xl:w-[60%]">
-            <Button
-              variant={"outline"}
-              className="bg-[#3563E9] text-white px-5"
-            >
-              Show more car
-            </Button>
+            <Link href={"/cars"}>
+              <Button
+                variant={"outline"}
+                className="bg-[#3563E9] text-white px-5"
+              >
+                Show more car
+              </Button>
+            </Link>
           </div>
           <div className="flex justify-end text-[#838383] text-sm text-right w-[27%] sm:w-[50%]">
             120 Car

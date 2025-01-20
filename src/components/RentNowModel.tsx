@@ -48,6 +48,8 @@ function RentNowModel({
                 <Image
                   src={searchedCar.image || ""}
                   alt={searchedCar.name}
+                  width={240}
+                  height={150}
                   className=" h-10 sm:h-20 object-cover rounded-md"
                 />
                 <div>

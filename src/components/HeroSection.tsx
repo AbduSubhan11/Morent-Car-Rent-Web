@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 function HeroSection() {
   return (
@@ -24,12 +25,14 @@ function HeroSection() {
               Ease of doing a car rental safely and reliably. Of course at a low
               price.
             </p>
-            <Button
-              variant={"outline"}
-              className="bg-[#3b5dc4] px-2 sm:px-5 text-white w-fit"
-            >
-              Rental Car
-            </Button>
+            <Link href={"/cars"}>
+              <Button
+                variant={"outline"}
+                className="bg-[#3b5dc4] px-2 sm:px-5 text-white w-fit"
+              >
+                Rental Car
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -50,12 +53,14 @@ function HeroSection() {
               Providing cheap car rental services and safe and comfortable
               facilities.
             </p>
-            <Button
-              variant={"outline"}
-              className="bg-[#3b5dc4] px-5 text-white w-fit"
-            >
-              Rental Car
-            </Button>
+            <Link href={"/cars"}>
+              <Button
+                variant={"outline"}
+                className="bg-[#3b5dc4] px-2 sm:px-5 text-white w-fit"
+              >
+                Rental Car
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

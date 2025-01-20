@@ -1,0 +1,52 @@
+--> STEPS TAKEN TO BUILD COMPOENTS AND INTEGRATE <--
+
+Plan and Design: We started by figuring out what the components should do, how they should look, and how they would interact with each other.
+
+Build Components: Each component, like the settings modal or navigation bar was built using Nextjs with TypeScript. We kept them modular and reusable, focusing on clean and organized code.
+
+Style Components: Tailwind CSS was used to style everything consistently. It helped us quickly create a polished responsive design.
+
+Add Functionality: We added features like opening/closing the modal, toggling settings, and managing states using useState and props and also context to communicate between components.
+
+Test and Debug: Once the components were built we tested them on different devices and browsers to ensure they worked well and fixed any bugs we found.
+
+Integrate with the App: Finally we connected all the components together ensuring they worked seamlessly with the rest of the app and didn’t break anything else.
+
+
+--> CHALLENGES FACED AND SOLUTIONS IMPLEMENTED <--
+
+Issue: When integrating the modal it disturbed the layout of the navigation bar.
+Solution: We used a fixed positioning for the modal with z-index to ensure it floated above all other elements without affecting the layout.
+
+Issue: Ensuring the modal looked good on all screen sizes was challenging.
+Solution: Used Tailwinds responsive classes (max-w-lg, w-[90%], etc.) to handle various screen sizes effectively.
+
+Issue: Parent component styling was disrupted by the modal container.
+Solution: Encapsulated modal-specific styles and ensured it had no effect on the parent layout by limiting its scope to the modal area (absolute inset-0 styling).
+
+
+--> Best practices followed during development.  <--
+
+We broke down the modal functionality into a reusable SettingsModal,RentNowModal component, which promotes modularity and allows for easy reuse across the application.
+
+We effectively used React useState hook to manage the modal's settings such as language and notifications as well as its visibility.
+
+We implemented conditional rendering ({isSettingOpen && ...}) to control when the modal should appear optimizing performance and ensuring it only renders when needed.
+
+We used Tailwind CSS utilities like w-[90%] and max-w-lg to make the modal responsive to different screen sizes.The use of clear variable names like isSettingOpen, toggleModal, language, and notifications enhances readability.
+
+We created reusable Components to use in future and maintain code readability.
+
+We created functionality for search and filter so that user can search by name and filter by car type 
+
+
+--> ADDITIONAL FEATURES IMPLEMENTED <--
+
+User Profile Component.
+Car Listing Component.
+Modals.
+
+
+
+
+

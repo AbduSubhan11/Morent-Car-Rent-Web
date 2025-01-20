@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 function DashboardAsideBar() {
@@ -381,9 +382,9 @@ function DashboardAsideBar() {
                 strokeLinejoin="round"
               />
             </svg>
-            <h1 className="text-[#90A3BF] text-base font-medium">
+            <Link href={"/faq"} className="text-[#90A3BF] text-base font-medium cursor-pointer">
               Help & Center
-            </h1>
+            </Link>
           </div>
           <div className="flex items-center gap-2 pl-2 w-full">
             <svg

@@ -4,6 +4,7 @@ import Mycard from "./Mycard";
 import { Button } from "./ui/button";
 import { client } from "@/sanity/lib/client";
 import GridSkeleton from "./GridSkeletion";
+import Link from "next/link";
 
 type recomendcardata = {
   id: number;
@@ -30,9 +31,9 @@ async function fetchRecommendedCarsFromSanity() {
 
   try {
     const cars = await client.fetch(query);
-    
+
     return cars.map((car: any) => ({
-      id:car.id,
+      id: car.id,
       name: car.name,
       category: car.category,
       image: car.image || "",
@@ -86,9 +87,14 @@ function RecommendationCar() {
       </div>
       <div className="flex items-center">
         <div className="flex justify-end w-[73%] sm:w-[80%] md:w-[70%] xl:w-[60%]">
-          <Button variant={"outline"} className="bg-[#3563E9] text-white px-5">
-            Show more car
-          </Button>
+          <Link href={"/cars"}>
+            <Button
+              variant={"outline"}
+              className="bg-[#3563E9] text-white px-5"
+            >
+              Show more car
+            </Button>
+          </Link>
         </div>
         <div className="flex justify-end text-[#838383] text-sm text-right w-[27%] sm:w-[50%]">
           120 Car

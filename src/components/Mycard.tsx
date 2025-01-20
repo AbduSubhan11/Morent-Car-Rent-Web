@@ -2,9 +2,10 @@ import Image from "next/image";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useWish } from "@/Context/wishlistContext";
 
 type data = {
-  id:number;
+  id: number;
   name: string;
   category: string;
   image: string;
@@ -14,7 +15,7 @@ type data = {
   originalPrice?: number;
 };
 
-function card({
+function Card({
   id,
   name,
   category,
@@ -24,26 +25,32 @@ function card({
   price,
   originalPrice,
 }: data) {
+  const { addToWish } = useWish();
+  
   return (
     <div className="p-5 space-y-10 lg:w-fi bg-white rounded-md">
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <h1 className="font-bold text-xl ">{name}</h1>
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12.62 20.8096C12.28 20.9296 11.72 20.9296 11.38 20.8096C8.48 19.8196 2 15.6896 2 8.68961C2 5.59961 4.49 3.09961 7.56 3.09961C9.38 3.09961 10.99 3.97961 12 5.33961C13.01 3.97961 14.63 3.09961 16.44 3.09961C19.51 3.09961 22 5.59961 22 8.68961C22 15.6896 15.52 19.8196 12.62 20.8096Z"
-              stroke="#90A3BF"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <Link href={"/wishlist"}>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              onClick={()=>addToWish({id,name,category,image,petrol,people,price,originalPrice,})}
+              className="hover:scale-90"
+            >
+              <path
+                d="M12.62 20.8096C12.28 20.9296 11.72 20.9296 11.38 20.8096C8.48 19.8196 2 15.6896 2 8.68961C2 5.59961 4.49 3.09961 7.56 3.09961C9.38 3.09961 10.99 3.97961 12 5.33961C13.01 3.97961 14.63 3.09961 16.44 3.09961C19.51 3.09961 22 5.59961 22 8.68961C22 15.6896 15.52 19.8196 12.62 20.8096Z"
+                stroke="#90A3BF"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Link>
         </div>
         <div className="text-[#90A3BF] font-bold text-sm ">{category}</div>
       </div>
@@ -141,4 +148,4 @@ function card({
   );
 }
 
-export default card;
+export default Card;
