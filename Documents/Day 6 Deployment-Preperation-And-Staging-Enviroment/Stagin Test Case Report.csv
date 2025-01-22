@@ -1,0 +1,13 @@
+Test Case ID,Test Case Description,Test Steps,Expected Result,Actual Result,Status,Severity Level,,Remarks
+TC001,Testing for the popular cars and recommendation cars ,Open Home page,Product Displayed Correctly,Product Displayed Correctly,Passed,Medium,,No issues Working Great
+TC002,Check WishList functionality ,Click on Heart symbol on cards,Product Added Correctly,Product Added Correctly ,Passed,High,,No issues Working Great
+TC003,Responsiveness Of all components or pages,Resize window or check on mobiles,All Components Adjust Properly,All responsive completely,Passed,High,,No issues Working Great
+TC004,Testting search functionality,click on show more button (/cars) and type car name,Results matching the car name are displayed,Results displayed correctly,Passed,Medium,,No issues Working Great
+TC005,Testing filter functionality,click on show more button (/cars) and filter by car type name,Results matching the car by filter are displayed,Results displayed correctly,Passed,High,,No issues Working Great
+TC006,Test loading skelton for API calls,Refresh the page to see the skeleton,Loader Cards will show until data fetched,Loader skleton displayed correctly,Passed,High,,No issues Working Great
+TC007,Testing Dynamic detail page,Cick on the rent now button on cards,The Data will fetched by matching the id,Results displayed correctly,Passed,Medium,,No issues Working Great
+TC008,Acces any Non Exist page,type any thing in the url,Full Structured not-found page,Structured Not-Found Page,Passed,High,,No issues Working Great
+TC008,Testing Price Range Slider,Go to category page change the price range on side bar,The Data will fetched accpording to the price range,Results displayed correctly,Passed,High,,No issues Working Great
+TC009,Testing Remove Button on wishlist,On Click on Heart button on cards and then > wishlist page > del button,The Specific Cars Del from wishlist,Results displayed correctly,Passed,High,,No issues Working Great
+TC010,Testing user profile,Header > Click on User Pic,The page Redirect to the user-profile page,Results displayed correctly,Passed,Medium,,No issues Working Great
+TC011,Testing setting Modals,Click on the setting button on Header,The Popup will show for settings,Results displayed correctly,Passed,High,,No issues Working Great
