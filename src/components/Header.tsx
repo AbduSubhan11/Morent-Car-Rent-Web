@@ -2,13 +2,58 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SettingsModal from "./SettingsModel";
+import { client } from "@/sanity/lib/client";
+
+type PopularCarData = {
+  id: number;
+  name: string;
+  category: string;
+  image: string;
+  petrol: number;
+  people: number;
+  price: number;
+  originalPrice?: number;
+};
+
+async function fetchCarsFromSanity() {
+  const query = `*[_type == "car"]{
+    id,
+    name,
+    category,
+    "image": image.asset->url,
+    fuelCapacity,
+    seatingCapacity,
+    pricePerDay,
+    originalPrice
+  }`;
+
+  try {
+    const cars = await client.fetch(query);
+    return cars.map((car: any) => ({
+      id: car.id,
+      name: car.name,
+      category: car.category,
+      image: car.image || "",
+      petrol: car.fuelCapacity || 0,
+      people: car.seatingCapacity || 0,
+      price: car.pricePerDay || 0,
+      originalPrice: car.originalPrice || undefined,
+    }));
+  } catch (error) {
+    console.error("Error fetching data from Sanity:", error);
+    return [];
+  }
+}
 
 function Header() {
   const [isHamburger, setIsHamburger] = useState(false);
   const [isSettingOpen, SetIsSettingOpen] = useState(true);
   const pathname = usePathname();
+  const [carData, setCarData] = useState<PopularCarData[]>([]);
+  const [userSearch, setUserSearch] = useState("");
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const toggleModal = () => SetIsSettingOpen(!isSettingOpen);
 
@@ -18,6 +63,20 @@ function Header() {
   const toggleMenu = () => {
     setIsHamburger(false);
   };
+
+  const filteredCars = carData.filter((car) =>
+    car.name.toLowerCase().includes(userSearch.toLowerCase())
+  );
+
+  // DATA FETCHING FOR ALL CARS
+  useEffect(() => {
+    async function fetchData() {
+      const fetchedCars = await fetchCarsFromSanity();
+      setCarData(fetchedCars);
+    }
+    fetchData();
+  }, []);
+
   return (
     <header className="flex items-center justify-between px-6 sm:px-10 py-6 sm:py-10 sm:border">
       <div className="flex flex-col md:flex-row md:items-center w-full gap-5 sm:gap-10">
@@ -98,10 +157,49 @@ function Header() {
               />
             </svg>
             <input
+              value={userSearch}
+              onChange={(e) => setUserSearch(e.target.value)}
               type="text"
-              placeholder="Search something here"
-              className="w-full outline-none"
+              placeholder="Search something here..."
+              className="w-full outline-none "
+              onFocus={() => setIsDropdownVisible(true)}
+              // onBlur={() => setIsDropdownVisible(false)}
             />
+          </div>
+          <div
+            className={`absolute z-30 overflow-y-scroll shadow-md rounded-md bg-white border w-[480px] h-52 top-[12%] p-2 ${
+              isDropdownVisible ? "block" : "hidden"
+            }`}
+          >
+            {carData.length === 0 ? (
+              Array.from({ length: 5 }, (_, index: number) => (
+                <div
+                  key={index}
+                  className="flex items-center hover:bg-gray-200 gap-4 animate-pulse border-b p-1"
+                >
+                  <div className="w-20 h-8 bg-gray-300"></div>
+                  <div className="w-24 h-4 bg-gray-300"></div>
+                </div>
+              ))
+            ) : filteredCars.length > 0 ? (
+              filteredCars.map((car) => (
+                <Link
+                  key={car.id}
+                  href={`/car/${car.id}`}
+                  className="flex items-center cursor-pointer hover:bg-gray-200 gap-4 space-y-3 border-b p-1"
+                >
+                  <Image
+                    src={car.image}
+                    alt={car.name}
+                    width={60}
+                    height={50}
+                  />
+                  <h1>{car.name}</h1>
+                </Link>
+              ))
+            ) : (
+              <h1 className="flex items-center justify-center">Not found</h1>
+            )}
           </div>
           <svg
             width="24"
@@ -162,8 +260,8 @@ function Header() {
         </div>
 
         {/* FOR SMALL SCREEN */}
-        <div className="md:hidden flex items-center gap-5   ">
-          <div className="flex items-center gap-3 rounded-md border px-4 h-[44px]">
+        <div className="md:hidden flex items-center gap-5 relative ">
+          <div className="flex items-center gap-3 rounded-md border px-4 w-full h-[44px]">
             <svg
               width="24"
               height="24"
@@ -187,68 +285,49 @@ function Header() {
               />
             </svg>
             <input
+              value={userSearch}
+              onChange={(e) => setUserSearch(e.target.value)}
               type="text"
               placeholder="Search something here"
-              className="w-full outline-none"
+              className="w-full outline-none text-sm"
+              onFocus={() => setIsDropdownVisible(true)}
+              // onBlur={() => setIsDropdownVisible(false)}
             />
           </div>
-          <div className="flex items-center  rounded-md border px-4 h-[44px]">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M22 6.5H16"
-                stroke="#596780"
-                strokeWidth="1.5"
-                strokeMiterlimit="10"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M6 6.5H2"
-                stroke="#596780"
-                strokeWidth="1.5"
-                strokeMiterlimit="10"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M10 10C11.933 10 13.5 8.433 13.5 6.5C13.5 4.567 11.933 3 10 3C8.067 3 6.5 4.567 6.5 6.5C6.5 8.433 8.067 10 10 10Z"
-                stroke="#596780"
-                strokeWidth="1.5"
-                strokeMiterlimit="10"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M22 17.5H18"
-                stroke="#596780"
-                strokeWidth="1.5"
-                strokeMiterlimit="10"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M8 17.5H2"
-                stroke="#596780"
-                strokeWidth="1.5"
-                strokeMiterlimit="10"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M14 21C15.933 21 17.5 19.433 17.5 17.5C17.5 15.567 15.933 14 14 14C12.067 14 10.5 15.567 10.5 17.5C10.5 19.433 12.067 21 14 21Z"
-                stroke="#596780"
-                strokeWidth="1.5"
-                strokeMiterlimit="10"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+          <div
+            className={`absolute z-30 overflow-y-scroll shadow-md rounded-md bg-white border w-full h-52 top-[98%] p-2 ${
+              isDropdownVisible ? "block" : "hidden"
+            }`}
+          >
+            {carData.length === 0 ? (
+              Array.from({ length: 5 }, (_, index: number) => (
+                <div
+                  key={index}
+                  className="flex items-center hover:bg-gray-200 gap-4 animate-pulse border-b p-1"
+                >
+                  <div className="w-20 h-8 bg-gray-300"></div>
+                  <div className="w-24 h-4 bg-gray-300"></div>
+                </div>
+              ))
+            ) : filteredCars.length > 0 ? (
+              filteredCars.map((car) => (
+                <Link
+                  key={car.id}
+                  href={`/car/${car.id}`}
+                  className="flex items-center cursor-pointer hover:bg-gray-200 gap-4 space-y-3 border-b p-1"
+                >
+                  <Image
+                    src={car.image}
+                    alt={car.name}
+                    width={40}
+                    height={50}
+                  />
+                  <h1 className="text-xs">{car.name}</h1>
+                </Link>
+              ))
+            ) : (
+              <h1 className="flex items-center justify-center text-xs">Not found</h1>
+            )}
           </div>
         </div>
         {/* MENUDIV */}
